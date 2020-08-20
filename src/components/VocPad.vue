@@ -90,28 +90,15 @@
       <b-modal id="configure_property" title="Configure Property Shape" :no-close-on-backdrop="true" @ok="editProp()" size="lg">
         <form>
           <div class="form-group">
-            <label for="property_iri">Type</label>
-            <div>
-              <TermInput type="iri" id="property_iri" v-model="property_iri" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="property_iri">Datatype</label>
-            <div>
-              <TermInput type="iri" id="property_iri" v-model="property_iri" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="property_label">Class</label>
-            <div>
-              <TermInput type="literal" id="property_label" v-model="property_label" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="property_comment">Cardinality</label>
-            <div>
-              <TermInput type="literal" id="property_comment" v-model="property_comment" />
-            </div>
+              <b-form-radio-group
+                id="propertyShapeProperties"
+                v-model="shapeOptionsSelected"
+                :options="shapeOptions"
+                buttons
+                button-variant="outline-primary"
+                size="lg"
+                name="radio-btn-outline"
+              ></b-form-radio-group>
           </div>
         </form>
       </b-modal>
@@ -182,7 +169,12 @@ export default {
         'http://www.w3.org/ns/shacl#': 'sh:'
       },
       next_x: null,
-      next_y: null
+      next_y: null,
+      shapeOptionsSelected: 'literal',
+      shapeOptions: [
+          { text: 'Literal', value: 'literal' },
+          { text: 'Resource', value: 'resource' }
+      ]
     }
   },
   computed: mapState(['graph_iri']),
@@ -287,7 +279,8 @@ export default {
     configureProperty (node, port) {
       console.log(node)
       console.log(port)
-      console.log('configure ' + node.object.shapeIri.id + ' port' + port.object.shapeIri.id)
+      console.log("configure " + node.object.shapeIri.id + " port" + port.object.shapeIri.id)
+      this.$bvModal.show("configure_property")
     },
     shortenIri (iriIn) {
       const iri = new URL(iriIn)
